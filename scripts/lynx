@@ -1,0 +1,11 @@
+#!/bin/bash
+function build() {
+	_loge "Configuring..."
+	_configure --prefix=/usr --with-ssl
+
+	_loge "Building..."
+	_make
+
+	_loge "Installing..."
+	_make install
+}

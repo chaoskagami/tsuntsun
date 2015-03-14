@@ -1,0 +1,14 @@
+#!/bin/bash
+function build() {
+	_loge "Running bootstrap so autoconf patches are reflected..."
+	_log ./bootstrap
+
+	_loge "Configuring..."
+	_configure  --enable-xvideo --enable-directfb --disable-glx --enable-qt=4 --disable-sid --enable-sdl --enable-a52 --enable-libmpeg2 --enable-dvdnav --enable-faad --enable-vorbis --enable-ogg --enable-theora --enable-mkv --enable-freetype --enable-flac --disable-caca --enable-skins2 --enable-alsa --prefix=/usr --with-pic=yes
+
+	_loge "Building..."
+	_make
+
+	_loge "Installing..."
+	_make install
+}

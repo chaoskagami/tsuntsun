@@ -1,0 +1,14 @@
+#!/bin/bash
+
+source $TSUNDIR/$tsun_m/probe
+probe
+
+rm -rf $TSUNDIR/$tsun_b/xorg
+cp -ra $TSUNDIR/$tsun_c/xorg.dir $TSUNDIR/$tsun_b/xorg
+cd $TSUNDIR/$tsun_b/xorg
+
+export LDFLAGS=-Wl,-z,lazy
+export PREFIX=$TSUN_PREFIX
+export LIBDIR=$TSUN_LIBDIR
+
+_log ./util/modular/build.sh -n --clone -p

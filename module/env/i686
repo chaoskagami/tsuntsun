@@ -1,0 +1,3 @@
+export TSUN_PREFIX=/usr
+export TSUN_LIBDIR=/usr/lib32
+export TSUN_ARCH=i686

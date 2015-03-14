@@ -1,0 +1,20 @@
+#!/bin/bash
+
+export TSUN_PY=python2
+
+function detect_setuppy() {
+        cd $TSUN_BDIR/$TSUN_PKG/$TSUN_APPEND
+        if [ -e "setup.py" ]; then
+                export SETUPPY=1
+                return
+        fi
+}
+
+function b_setuppy() {
+        _logw $TSUN_PY setup.py configure $TSUN_EXTRA_CFG
+        _log $TSUN_PY setup.py build
+        if [ ! "$EXTRA_CMDS" == "" ]; then
+               _log eval $TSUN_EXTRA_CMDS || fail
+        fi
+        _log $TSUN_PY setup.py install
+}

@@ -1,0 +1,9 @@
+#!/bin/bash
+function patch_rules() {
+        for f in $TSUNDIR/$tsun_r/*; do
+                if [ "$(echo $(echo $TSUN_NAME | sed 's/-*//g') | sed 's/[0123456789]//g')" == "$(basename $f)" ]; then
+                        source $f
+                        export TSUN_CUSTOM=1
+                fi
+        done
+}

@@ -1,0 +1,12 @@
+#!/bin/bash
+function build() {
+	# System software. Yes, '/'.
+	_loge "Configuring (for /)..."
+	_configure --with-xz --with-zlib --prefix=/
+
+	_loge "Building..."
+	_make
+
+	_loge "Installing..."
+	_make install
+}

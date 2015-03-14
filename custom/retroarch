@@ -1,0 +1,29 @@
+#!/bin/bash
+###########################
+# Fetch stuffs
+###########################
+
+cd $TSUNDIR/$tsun_f
+mkdir -p retroarch
+cd retroarch
+
+git clone https://github.com/libretro/libretro-super
+
+cd $TSUNDIR/$tsun_b
+mkdir retroarch
+cd retroarch
+
+###########################
+# Fetch
+###########################
+
+$TSUNDIR/$tsun_f/retroarch/libretro-fetch.sh
+
+###########################
+# Fetch
+###########################
+
+$TSUNDIR/$tsun_f/retroarch/libretro-config.sh
+$TSUNDIR/$tsun_f/retroarch/libretro-build.sh
+
+$TSUNDIR/$tsun_f/retroarch/retroarch-build.sh

@@ -1,0 +1,181 @@
+#!/bin/bash
+
+export P=$TSUN_PKG
+export PN=$TSUN_NAME
+export PV=$TSUN_VER
+
+export AUTOTOOLS_AUTORECONF=1
+export PLOCALES="ar bg ca cs da de el en en_US eo es fa fi fr he hi hr hu it ja ko lt ml nb_NO nl or pa pl pt_BR pt_PT rm ro ru sk sl sr_RS@cyrillic sr_RS@latin sv te th tr uk wa zh_CN zh_TW"
+export PLOCALE_BACKUP="en"
+
+winegecko_version_check() {
+	if [[ ${PV} == ${1} ]] ; then
+		GV=$2
+	fi
+}
+
+winegecko_version_check "9999" "2.36"
+winegecko_version_check "1.7.38" "2.36"
+winegecko_version_check "1.7.37" "2.34"
+winegecko_version_check "1.7.36" "2.34"
+winegecko_version_check "1.7.35" "2.34"
+winegecko_version_check "1.7.34" "2.34"
+winegecko_version_check "1.7.33" "2.34"
+winegecko_version_check "1.7.32" "2.34"
+winegecko_version_check "1.7.31" "2.34"
+winegecko_version_check "1.7.30" "2.34"
+winegecko_version_check "1.7.29" "2.34"
+winegecko_version_check "1.7.28" "2.34"
+winegecko_version_check "1.7.27" "2.34"
+winegecko_version_check "1.6.1" "2.34"
+winegecko_version_check "1.6.2" "2.34"
+
+winemono_version_check() {
+	if [[ ${PV} == ${1} ]] ; then
+		MV=$2
+	fi
+}
+
+winemono_version_check "9999" "4.5.6"
+winemono_version_check "1.7.38" "4.5.6"
+winemono_version_check "1.7.37" "4.5.4"
+winemono_version_check "1.7.36" "4.5.4"
+winemono_version_check "1.7.35" "4.5.4"
+winemono_version_check "1.7.34" "4.5.4"
+winemono_version_check "1.7.33" "4.5.4"
+winemono_version_check "1.7.32" "4.5.4"
+winemono_version_check "1.7.31" "4.5.4"
+winemono_version_check "1.7.30" "4.5.4"
+winemono_version_check "1.7.29" "4.5.4"
+winemono_version_check "1.7.28" "4.5.4"
+winemono_version_check "1.7.27" "4.5.4"
+winemono_version_check "1.6.1" "4.5.4"
+winemono_version_check "1.6.2" "4.5.4"
+
+function use_with() {
+	echo -n "--with-$1"
+}
+
+function use_without() {
+	echo -n "--without-$1"
+}
+
+function build() {
+	build_$TSUN_ARCH
+}
+
+function build_x86_64() {
+	export COMMON="$(use_with alsa) $(use_with capi) $(use_with cms) $(use_with cups) $(use_with curses) $(use_with dbus) $(use_with fontconfig) $(use_with gnutls) $(use_with gphoto) $(use_with gsm) --without-hal $(use_with jpeg) $(use_with ldap) $(use_with mpg123) $(use_with netapi) $(use_with gettext) $(use_with openal) $(use_with opengl) $(use_without osmesa) $(use_with oss) $(use_with png) $(use_with pthread) $(use_with sane) $(use_with freetype) $(use_with x) $(use_with xcomposite) $(use_with xinerama) $(use_with xml) $(use_with xslt) --prefix=/usr/lib/wine/${PV}/ --sysconfdir=/etc/wine/${PV}/ --mandir=/usr/lib/wine/${PV}/man/ --datadir=/usr/lib/wine/${PV}/"
+
+	_loge "Wine:	$PV"
+	_loge "Gecko:	$GV"
+	_loge "Mono:	$MV"
+	_loge "Name:	$P"
+	_loge "Cfg:	$COMMON"
+	_loge "Arch:	$TSUN_ARCH"
+	_loge "Type:	Shared WoW64"
+	_loge "=========================================================================================="
+
+	export LDCONFIG=/bin/true
+
+	mkdir -p ../b_wine64 ../b_wine32
+
+	cd ../b_wine64
+
+	_loge "Configuring 64-bit wine."
+
+	# Build 64-bit first.
+	_log ../${P}/configure	--enable-win64 \
+				$COMMON
+
+	_loge "Building 64-bit wine."
+
+	_make
+
+	cd ../b_wine32
+
+	_loge "Configuring 32-bit wine."
+
+	_log ../${P}/configure	--with-wine64=../b_wine64 \
+				$COMMON
+
+	_loge "Building 32-bit wine."
+
+	_make
+
+	_loge "Installing 32-bit wine."
+
+	cd ../b_wine32
+	_make install
+
+	_loge "Installing 64-bit wine."
+
+	cd ../b_wine64
+	_make install
+
+	cd ../${P}
+
+	_loge "Fetching wine gecko."
+
+	fetch_sf wine Wine%20Gecko/${GV}/wine_gecko-${GV}-x86.msi
+	fetch_sf wine Wine%20Gecko/${GV}/wine_gecko-${GV}-x86_64.msi
+
+	_loge "Fetching wine mono."
+
+	fetch_sf wine Wine%20Mono/${MV}/wine-mono-${MV}.msi
+
+	_loge "Installing gecko & mono."
+
+	_log install -dv -m 755 /usr/lib/wine/${PV}/share/wine/gecko
+	_log install -dv -m 755 /usr/lib/wine/${PV}/share/wine/mono
+	_log install -m 755 wine_gecko-${GV}-x86.msi /usr/lib/wine/${PV}/share/wine/gecko/
+	_log install -m 755 wine_gecko-${GV}-x86_64.msi /usr/lib/wine/${PV}/share/wine/gecko/
+	_log install -m 755 wine-mono-${MV}.msi /usr/lib/wine/${PV}/share/wine/mono/
+
+}
+
+function build_i686() {
+	export COMMON="$(use_with alsa) $(use_with capi) $(use_with cms) $(use_with cups) $(use_with curses) $(use_with dbus) $(use_with fontconfig) $(use_with gnutls) $(use_with gphoto) $(use_with gsm) --without-hal $(use_with jpeg) $(use_with ldap) $(use_with mpg123) $(use_with netapi) $(use_with gettext) $(use_with openal) $(use_with opengl) $(use_without osmesa) $(use_with oss) $(use_with png) $(use_with pthread) $(use_with sane) $(use_with freetype) $(use_with x) $(use_with xcomposite) $(use_with xinerama) $(use_with xml) $(use_with xslt) --prefix=/usr/lib/wine/${PV}/ --sysconfdir=/etc/wine/${PV}/ --mandir=/usr/lib/wine/${PV}/man/ --datadir=/usr/lib/wine/${PV}/"
+
+
+	_loge "Wine:	$PV"
+	_loge "Gecko:	$GV"
+	_loge "Mono:	$MV"
+	_loge "Name:	$P"
+	_loge "Cfg:	$COMMON"
+	_loge "Arch:	$TSUN_ARCH"
+	_loge "Type:	Standard 32bit"
+	_loge "=========================================================================================="
+
+	export LDCONFIG=/bin/true
+
+	mkdir -p ../b_wine
+
+	cd ../b_wine
+
+	_loge "Configuring wine."
+	_log ../${P}/configure	$COMMON
+
+	_loge "Building wine."
+	_make
+
+	_loge "Installing wine."
+	_make install
+
+	cd ../${P}
+
+	_loge "Fetching wine gecko."
+
+	fetch_sf wine Wine%20Gecko/${GV}/wine_gecko-${GV}-x86.msi
+
+	_loge "Fetching wine mono."
+
+	fetch_sf wine Wine%20Mono/${MV}/wine-mono-${MV}.msi
+
+	_loge "Installing gecko & mono."
+
+	_log install -dv -m 755 /usr/lib/wine/${PV}/share/wine/gecko
+	_log install -dv -m 755 /usr/lib/wine/${PV}/share/wine/mono
+	_log install -m 755 wine_gecko-${GV}-x86.msi /usr/lib/wine/${PV}/share/wine/gecko/
+	_log install -m 755 wine-mono-${MV}.msi /usr/lib/wine/${PV}/share/wine/mono/
+}

@@ -1,0 +1,52 @@
+#!/bin/bash
+
+mkdir $TSUNDIR/$tsun_b/nvidia
+cd $TSUNDIR/$tsun_b/nvidia
+
+source $TSUNDIR/$tsun_b/probe
+probe
+
+if [ "$1" == "" ]; then
+	fail "Where is the nvidia .run file?"
+fi
+
+if [ "$2" == "" ]; then
+	fail "Please give me your kernel version."
+fi
+
+DRIVER=$1
+FILE=$(basename $1)
+
+cp $1 . || fail "Use an absolute path."
+if [ -d $(basename $FILE .run) ]; then
+	rm -rf $(basename $FILE .run)
+fi
+
+./$FILE -a -x
+
+cd $(basename $FILE .run)
+
+for f in $TSUNDIR/$tsun_p/nv-patch-1/*; do
+	_log patch -p1 < $f
+done
+
+cd kernel
+_logw make
+if [ -e "/lib/modules/$2/kernel/drivers/video/nvidia.ko" ]; then
+	echo "Nvidia's makefile failed but the build succeeded. Stuuupid~"
+else
+	fail "Build failed."
+fi
+cd ..
+
+# Install GL libs for BB
+mkdir -p /usr/lib64/nvidia_drv
+cp *.so* /usr/lib64/nvidia_drv/
+
+# And the 32-bitters
+mkdir -p /usr/lib32/nvidia_drv
+cp 32/*.so* /usr/lib32/nvidia_drv/
+
+
+# Sign it.
+perl /usr/src/linux-${2}/scripts/sign-file sha512 /usr/src/linux-${2}/signing_key.priv /usr/src/linux-${2}/signing_key.x509 /lib/modules/$2/kernel/drivers/video/nvidia.ko

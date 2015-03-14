@@ -1,0 +1,5 @@
+#!/bin/bash
+function build() {
+	export TSUN_EXTRA_CMDS='python setup.py import_cldr'
+	b_setuppy
+}

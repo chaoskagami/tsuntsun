@@ -1,0 +1,27 @@
+#!/bin/bash
+function build() {
+	# We actually need rhino.
+
+	_loge "Fetching Rhino zip..."
+	fetch_wget https://github.com/downloads/mozilla/rhino/rhino1_7R4.zip
+	_loge "Unpackng Rhino zip..."
+	_log unzip rhino1_7R4.zip
+
+	_loge "Generating configure..."
+	_log ./autogen.sh
+
+	_loge "Configuring..."
+	_configure	--enable-nss					\
+			--with-parallel-jobs				\
+			--disable-bootstrap				\
+			--with-rhino=$(pwd)/rhino1_7R4/js.jar
+
+	_loge "Building..."
+	_make
+
+	_loge "Installing..."
+	_log chmod 0644 openjdk.build/j2sdk-image/lib/sa-jdi.jar
+	rm -rf /usr/lib/icedtea-7_2.5.4
+	_log cp -R openjdk.build/j2sdk-image /usr/lib/icedtea-7_2.5.4
+	_log chown -R root:root /usr/lib/icedtea-7_2.5.4
+}

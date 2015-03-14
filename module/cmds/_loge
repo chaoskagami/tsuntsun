@@ -1,0 +1,4 @@
+#!/bin/bash
+function _loge() {
+        ( echo "[Info] $@" | tee -a $TSUN_DIR/$tsun_b/$TSUN_PKG-log.txt 2>&1 )
+}

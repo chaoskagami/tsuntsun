@@ -1,0 +1,4 @@
+#!/bin/bash
+function _automake() {
+	_log automake $@
+}

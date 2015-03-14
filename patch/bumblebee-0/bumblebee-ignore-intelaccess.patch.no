@@ -1,0 +1,14 @@
+--- a/src/bblogger.c	2015-01-20 13:33:50.000000000 -0500
++++ b/src/bblogger.c	2015-03-11 01:40:03.764203567 -0400
+@@ -147,7 +147,10 @@
+             strstr(string, "Failed to load module \"mouse\"") ||
+             strstr(string, "No input driver matching") ||
+             strstr(string, "systemd-logind: failed to get session:") ||
+-            strstr(string, "Server terminated successfully")) {
++            strstr(string, "Server terminated successfully") ||
++            strstr(string, "Failed to load /usr/lib/xorg/modules/libglamoregl.so") ||
++            strstr(string, "Failed to load module \"glamoregl\"") ||
++            strstr(string, "/dev/dri/card0: failed to set DRM")) { // Line added. Non-fatal. Card0 is intel and is off-limits.
+       /* non-fatal errors */
+       prio = LOG_DEBUG;
+     } else {

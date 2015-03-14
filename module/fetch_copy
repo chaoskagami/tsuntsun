@@ -1,0 +1,12 @@
+#!/bin/bash
+function fetch_copy() {
+        export TSUN_PACKNAME=$(basename "$1")
+        export TSUN_EXT=${TSUN_PACKNAME#*.}
+        export TSUN_PKG=$(remove_ext $TSUN_PACKNAME)
+	export TSUN_NAME=$(echo $(echo $TSUN_PKG | sed 's/-*//g') | sed 's/[0123456789\.]//g')
+	export TSUN_VER=$(echo $TSUN_PKG | sed "s/$TSUN_NAME-//g")
+
+        if [ ! -e "$TSUN_PACKNAME" ]; then
+                cp "$1" $TSUNDIR/$tsun_f/$TSUN_PACKNAME
+        fi
+}

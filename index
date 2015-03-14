@@ -1,0 +1,8 @@
+  Inside /tsun:
+    build/	- Build tempdir
+    custom/	- Custom install script (Must do everything manually)
+    extern/	- External package systems, and compatibility scripts
+    files/	- File storage
+    scripts/	- Build scripts
+    patch/	- Patches for stuff (automatically applied, with -p1)
+    module/	- Internal Modules

@@ -1,0 +1,5 @@
+#!/bin/bash
+function build() {
+	export TSUN_PREFIX=/usr/games
+	b_setuppy
+}

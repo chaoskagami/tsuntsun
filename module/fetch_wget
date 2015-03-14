@@ -1,0 +1,6 @@
+#!/bin/bash
+function fetch_wget() {
+        if [ ! -e "./$(basename $1)" ]; then
+                wget $1
+        fi
+}

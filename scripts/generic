@@ -1,0 +1,19 @@
+#!/bin/bash
+
+#######################################################
+#                                                     #
+#  THIS IS A TEMPLATE FILE FOR MAKING NEW SCRIPTS     #
+#  IT SERVES ONLY AS AN EXAMPLE, NOTHING MORE.        #
+#                                                     #
+#######################################################
+
+function build() {
+	_loge "Configuring..."
+	_configure --prefix=/usr
+
+	_loge "Building..."
+	_make
+
+	_loge "Installing..."
+	_make install
+}

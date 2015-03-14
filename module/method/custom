@@ -1,0 +1,6 @@
+#!/bin/bash
+function detect_custom() {
+	if [ -e $TSUNDIR/$tsun_c/$1 ]; then
+		exit $(source $TSUNDIR/$tsun_c/$@)
+	fi
+}

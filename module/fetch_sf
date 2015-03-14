@@ -1,0 +1,4 @@
+#!/bin/bash
+function fetch_sf() {
+	wget http://sourceforge.net/projects/$1/files/$2
+}

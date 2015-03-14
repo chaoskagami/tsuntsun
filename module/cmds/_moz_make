@@ -1,0 +1,8 @@
+#!/bin/bash
+function _moz_make() {
+        # Fix -x- bit.
+        _log chmod -R +x build/autoconf/* python/*
+        _log find . -name '*.sh' -exec chmod +x {} \;
+	_log chmod +x ./mach
+	_log ./mach $@
+}

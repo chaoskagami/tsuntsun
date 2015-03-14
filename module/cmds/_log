@@ -1,0 +1,8 @@
+#!/bin/bash
+function _log() {
+	if [ $QUIET ]; then
+		( $@ >> $TSUN_DIR/$tsun_b/$TSUN_PKG-log.txt 2>&1 ) || fail "[Fail] Command '$1' failed."
+	else
+		( $@ | tee -a $TSUN_DIR/$tsun_b/$TSUN_PKG-log.txt 2>&1 ) || fail "[Fail] Command '$1' failed."
+	fi
+}

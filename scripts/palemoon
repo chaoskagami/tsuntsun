@@ -1,0 +1,56 @@
+#!/bin/bash
+function build() {
+	_loge "Configuring..."
+
+	_logw rm .mozconfig
+	_a --enable-64bit
+	_a --host=x86_64-pc-linux-gnu
+	_a --build=x86_64-pc-linux-gnu
+	_a --target=x86_64-pc-linux-gnu
+	_a --enable-application=browser
+	_a --enable-optimize="-O2"
+	_a --disable-static
+	_a --enable-shared
+	_a --disable-replace-malloc
+	_a --prefix=/usr
+	_a --with-system-png
+	_a --enable-system-ffi
+	_a --disable-gconv
+	_a --disable-mailnews
+	_a --disable-crashreporter
+	_a --disable-accessibility
+	_a --disable-parental-controls
+	_a --disable-maintenance-service
+	_a --disable-webrtc
+	_a --enable-shared-js
+	_a --disable-jit
+	_a --disable-ion
+	_a --enable-shared-js
+	_a --enable-system-jpeg
+	_a --enable-system-cairo
+	_a --disable-pulseaudio
+	_a --enable-alsa
+	_a --enable-system-icu
+	_a --disable-necko-wifi
+	_a --disable-installer
+	_a --disable-updater
+	_a --disable-websms-backend
+	_a --disable-tests
+	_a --disable-mochitests
+	_a --disable-debug
+	_a --disable-debug-symbols
+	_a --enable-intl-api
+
+	export MOZBUILD_STATE_PATH=$(pwd)
+	export MOZ_MAKE_FLAGS="-j$N"
+
+	# Build.
+	_loge "Building..."
+
+	export MOZCONFIG=$(pwd)/.mozconfig
+	_moz_make build
+}
+
+function _a() {
+	_loge "ac_add_options $1" | tee -a .mozconfig
+}

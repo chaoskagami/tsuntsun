@@ -1,0 +1,112 @@
+#!/bin/bash
+
+TSUNDIR=$( cd "$( dirname "$0" )" && pwd )
+cd $TSUNDIR
+
+export tsun_b=build
+export tsun_f=files
+export tsun_m=module
+export tsun_r=scripts
+export tsun_c=custom
+export tsun_p=patch
+
+source $TSUNDIR/$tsun_m/probe
+probe
+
+function check_env() {
+	detect_configure
+	detect_cmake
+	detect_autoconf
+	detect_setuppy
+
+	# This comes before in case programs can't do parallel make
+	if [ "$N" == "" ]; then
+		export N=$(nproc) # Default is number of CPUs
+	fi
+
+	cd $TSUNDIR/$tsun_b/$TSUN_PACKNAME/
+	cd $TSUNDIR/$tsun_b/$TSUN_PACKNAME/$TSUN_PKG/$TSUN_APPEND
+
+	echo "=========================================================================================="
+	echo "Package:		$TSUN_PKG"
+	echo "Version:		$TSUN_VER"
+	echo "Name:			$TSUN_NAME"
+	echo "Filename:		$TSUN_PACKNAME"
+	echo "Parallel:		$N"
+	echo "=========================================================================================="
+
+	patch_rules
+	apply_patches
+
+	if [ "$TSUN_CUSTOM" == 1 ] ; then
+		echo "Build via:	[Build Script]"
+		echo "=========================================================================================="
+		build
+	elif [ "$TSUN_CONFIGURE" == "1" ] ; then
+		echo "Build via:	[configure]"
+		echo "=========================================================================================="
+		b_configure
+	elif [ "$TSUN_SETUPPY" == "1" ] ; then
+		echo "Build via:	[setup.py]"
+		echo "=========================================================================================="
+		b_setuppy
+	elif [ "$TSUN_CMAKE" == "1" ] ; then
+		echo "Build via:	[cmake]"
+		echo "=========================================================================================="
+		fail "NYI, sorry."
+	elif [ "$TSUN_AUTOCONF" == "1" ] ; then
+		echo "Build via:	[autoconf && configure]"
+		echo "=========================================================================================="
+		b_autoconf
+	else
+		echo "Build via:	[I don't even]"
+		echo "=========================================================================================="
+		fail "W-what is this thing...? I can't do it! Impossible!"
+	fi
+
+	if [ ! $NOCLEAN == "1" ]; then
+		_loge "Cleaning up build directory..."
+		_logw rm -rfv $TSUNDIR/$tsun_b/$TSUN_PACKNAME
+	fi
+
+	echo "[Success] I tried my best for you! What do you think?"
+}
+
+
+function help() {
+	if [ "$1" == "" ]; then
+		echo "=========================================================================================="
+		echo "  Tsun - It's not like I build packages or anything!"
+		echo "    Usage:"
+		echo "      $TSUNDIR/tsun [opts] <url/file source>"
+		echo "=========================================================================================="
+		echo "  Flags:"
+		echo "    -nomaid	(-n)	Don't clean up post-build, even on success."
+		echo "    -bookworm	(-q)	Build quietly."
+		echo "    -present	(-p)	Build a distrib txz as well as install."
+		echo "=========================================================================================="
+		cat $TSUNDIR/index
+		echo "=========================================================================================="
+		exit 0
+	fi
+}
+
+help $@
+
+for f in $@; do
+	if [ "$f" == "-nomaid" ] || [ "$f" == "-n" ]; then
+		export NOCLEAN=1
+		shift
+	elif [ "$f" == "-bookworm" ] || [ "$f" == "-q" ]; then
+		export QUIET=1
+		shift
+	elif [ "$f" == "-present" ] || [ "$f" == "-p" ]; then
+		export PACKAGE=1
+		shift
+	fi
+done
+
+detect_custom $@
+get_file $1
+unpack_file
+check_env

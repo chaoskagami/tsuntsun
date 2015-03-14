@@ -1,0 +1,4 @@
+#!/bin/bash
+function _make() {
+	_log make -j$N $@
+}

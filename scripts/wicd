@@ -1,0 +1,6 @@
+#!/bin/bash
+function build() {
+	export TSUN_EXTRA_CFG='--distro=gentoo --no-install-gnome-shell --no-install-kde'
+	export LANG=C
+	b_setuppy
+}

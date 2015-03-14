@@ -1,0 +1,105 @@
+#!/bin/bash
+function build() {
+	_loge "Fixing some source issues..."
+
+	# Apply a fix for _BSD_SOURCE being deprecated
+	find . -type f | xargs sed -i 's/_BSD_SOURCE/_DEFAULT_SOURCE/g'
+
+	_loge "Adding some needed CFLAGS..."
+	# Apply a fix so iconv is used.
+	echo "CFLAGS += -DWITH_ICONV_FILTER" > libparserutils/Makefile.config.override
+
+	_loge "Exporting stuff for the stupid build system..."
+	# Export Stuff.
+	export PREFIX="/usr"
+	export CFLAGS="-D_GNU_SOURCE"
+	export CXXFLAGS="-D_GNU_SOURCE"
+
+	# Begin build of all libs
+
+	_loge "Building & installing deps [1/9]..."
+
+	# Build System
+	_log cd buildsystem
+	_make install
+
+	_loge "Building & installing deps [2/9]..."
+
+	# Utility
+	_log cd ../libparserutils
+	_make install
+
+	_loge "Building & installing deps [3/9]..."
+
+	# String Lib
+	_log cd ../libwapcaplet
+	_make install
+
+	_loge "Building & installing deps [4/9]..."
+
+	# HTML5 parser
+	_log cd ../hubbub
+	_make install
+
+	_loge "Building & installing deps [5/9]..."
+
+	# CSS Parser
+	_log cd ../libcss
+	_make install
+
+	_loge "Building & installing deps [6/9]..."
+
+	# Gif Reader
+	_log cd ../libnsgif
+	_make install
+
+	_loge "Building & installing deps [7/9]..."
+
+	# BMP reader
+	_log cd ../libnsbmp
+	_make install
+
+	_loge "Building & installing deps [8/9]..."
+
+	# Risc OS sprites (needed?)
+	_log cd ../librosprite
+	_make install
+
+	_loge "Building & installing deps [9/9]..."
+
+	# Framebuffer access
+	_log cd ../libnsfb
+	_make install
+
+	# Now build the actual software
+	_log cd ../netsurf
+
+	_loge "Removing irrelevant junk..."
+
+	# Remove uneeded shit.
+	_log rm -rf amiga atari beos cocoa monkey riscos windows
+
+	_loge "Setting config options..."
+
+	# Configure.
+	_log echo "NETSURF_USE_BMP=YES"				>> Makefile.config
+	_log echo "NETSURF_USE_GIF=YES"				>> Makefile.config
+	_log echo "NETSURF_USE_JPEG=YES"			>> Makefile.config
+	_log echo "NETSURF_USE_PNG=YES"				>> Makefile.config
+	_log echo "NETSURF_USE_MOZJS=YES"			>> Makefile.config
+	_log echo "NETSURF_USE_ROSPRITE=NO"			>> Makefile.config
+	_log echo "NETSURF_FB_FONTLIB=freetype"			>> Makefile.config
+	_log echo "NETSURF_FB_FONTPATH=/usr/share/fonts/dejavu"	>> Makefile.config
+	_log echo "NETSURF_FB_FRONTEND=linux"			>> Makefile.config
+	_log echo "NETSURF_TARGET=framebuffer"			>> Makefile.config
+	_log echo "PKG_CONFIG=pkg-config"			>> Makefile.config
+
+	_loge "Building..."
+
+	# Build.
+	_make TARGET=framebuffer
+
+	_loge "Installing..."
+
+	_make TARGET=framebuffer install
+}

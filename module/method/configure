@@ -1,0 +1,15 @@
+#!/bin/bash
+
+function detect_configure() {
+        cd $TSUN_BDIR/$TSUN_PKG/$TSUN_APPEND
+        if [ -e "configure" ]; then
+                export TSUN_CONFIGURE=1
+                return
+        fi
+}
+
+function b_configure() {
+        _configure --prefix=$TSUN_PREFIX --libdir=$TSUN_LIBDIR --sysconfdir=/etc --enable-shared --with-pic=yes
+        _make
+        _make install
+}

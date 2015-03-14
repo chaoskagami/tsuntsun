@@ -1,0 +1,12 @@
+--- vlc/configure.ac.orig	2015-03-08 17:58:18.302075279 -0400
++++ vlc/configure.ac	2015-03-08 17:58:25.672585628 -0400
+@@ -2243,9 +2243,6 @@
+ [  --enable-avcodec        libavcodec codec (default enabled)])
+ AS_IF([test "${enable_avcodec}" != "no"], [
+   PKG_CHECK_MODULES(AVCODEC,[libavcodec >= 53.34.0 libavutil >= 51.22.0], [
+-    PKG_CHECK_EXISTS([libavcodec < 56],, [
+-      AC_MSG_ERROR([libavcodec versions 56 and later are not supported yet.])
+-    ])
+     VLC_SAVE_FLAGS
+     CPPFLAGS="${CPPFLAGS} ${AVCODEC_CFLAGS}"
+     CFLAGS="${CFLAGS} ${AVCODEC_CFLAGS}"

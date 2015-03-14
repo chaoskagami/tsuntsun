@@ -1,0 +1,4 @@
+#!/bin/bash
+function remove_ext() {
+	echo $(echo $1 | sed 's/\.tar\..*//')
+}

@@ -1,0 +1,17 @@
+#!/bin/bash
+function build() {
+	_loge "Fixing autoconf issue..."
+	_log sed -i 's/\${AUTOCONF-autoconf}/autoconf/g' autogen.sh
+
+	_loge "Regenerating configure..."
+	_log ./autogen.sh
+
+	_loge "Configuring..."
+	_configure --prefix=/usr
+
+	_loge "Building..."
+	_make
+
+	_loge "Installing..."
+	_make install
+}

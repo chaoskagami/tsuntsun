@@ -1,0 +1,32 @@
+#!/bin/bash
+function unpack_file() {
+
+        _loge "Unpacking source..."
+
+        if [ "$TSUN_EXT" == "zip" ]; then
+                export TSUN_BDIR=$TSUNDIR/$tsun_b/$(basename $TSUN_PACKNAME)
+                mkdir -p $TSUN_BDIR && cd $TSUN_BDIR
+                _log unzip $TSUNDIR/$tsun_f/$TSUN_PACKNAME
+                return
+        fi
+
+        TSUN_FTYP=(tar gz xz bz2 tar.gz tar.xz tar.bz2 tgz txz tbz2)
+        for exttype in $TSUN_FTYP ; do
+                if [ `echo "$TSUN_EXT" | grep "$exttype" -` ]; then
+                        export TSUN_BDIR=$TSUNDIR/$tsun_b/$(basename $TSUN_PACKNAME)
+                        # tarball
+                        mkdir -p $TSUN_BDIR && cd $TSUN_BDIR
+                        _log tar -xvpf $TSUNDIR/$tsun_f/$TSUN_PACKNAME
+                        return
+                fi
+        done
+
+	if [ -f $TSUN_PACKNAME ] ; then
+		export TSUN_BDIR=$TSUNDIR/$tsun_b/$(basename $TSUN_PACKNAME)
+		mkdir -p $TSUN_BDIR && cd $TSUN_BDIR
+		_log cp -rav $TSUNDIR/$tsun_f/$TSUN_PACKNAME $TSUN_PACKNAME
+		return
+	fi
+
+	fail "You wrapped it up too well. I can't even open it. Help!"
+}

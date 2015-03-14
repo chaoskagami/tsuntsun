@@ -1,0 +1,22 @@
+#!/bin/bash
+function probe() {
+	for f in $TSUNDIR/$tsun_m/* ; do
+	        if [ ! -d $f ] ; then
+	                source $f
+	        fi
+	done
+
+	for f in $TSUNDIR/$tsun_m/method/* ; do
+	        if [ ! -d $f ] ; then
+	                source $f
+	        fi
+	done
+
+	for f in $TSUNDIR/$tsun_m/cmds/* ; do
+	        if [ ! -d $f ] ; then
+	                source $f
+	        fi
+	done
+
+	source $TSUNDIR/$tsun_m/env/$(uname -m)
+}

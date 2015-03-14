@@ -1,0 +1,17 @@
+#!/bin/bash
+
+function detect_autoconf() {
+        cd $TSUN_BDIR/$TSUN_PKG/$TSUN_APPEND
+        if [ -e "Makefile.in" ] || [ -e "configure.in" ] || [ -e "Makefile.am" ] || [ -e "configure.am" ] ; then
+                export TSUN_AUTOCONF=1
+                return
+        fi
+}
+
+function b_autoconf() {
+	_autoconf
+
+	_configure --prefix=$TSUN_PREFIX --libdir=$TSUN_LIBDIR --sysconfdir=/etc --enable-shared --with-pic=yes
+	_make
+	_make install
+}

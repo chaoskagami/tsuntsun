@@ -1,0 +1,8 @@
+#!/bin/bash
+function detect_cmake() {
+        cd $TSUN_BDIR/$TSUN_PKG/$TSUN_APPEND
+        if [ -e "CMakeLists.txt" ]; then
+                export CMAKE=1
+                return
+        fi
+}

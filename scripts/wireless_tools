@@ -1,0 +1,8 @@
+#!/bin/bash
+function build() {
+	_loge "Building..."
+	PREFIX=/usr _make -j4
+
+	_loge "Install..."
+	PREFIX=/usr _make install
+}

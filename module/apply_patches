@@ -1,0 +1,9 @@
+#!/bin/bash
+function apply_patches() {
+        if [ -d "$TSUNDIR/$tsun_p/$TSUN_PKG" ]; then
+                for f in `ls $TSUNDIR/$tsun_p/$TSUN_PKG/*.patch`; do
+                        patch -p1 < $f || fail "Couldn't patch it..."
+                done
+        fi
+}
+

@@ -1,0 +1,6 @@
+#!/bin/bash
+function rule() {
+        if [ "$TSUN_NAME" == "$1" ]; then
+                eval $2
+        fi
+}

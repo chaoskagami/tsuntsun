@@ -1,0 +1,8 @@
+#!/bin/bash
+function _logw() {
+        if [ $QUIET ]; then
+                ( $@ >> $TSUN_DIR/$tsun_b/$TSUN_PKG-log.txt 2>&1 ) || echo "[Warning] Command '$1' failed. Not fatal"
+        else
+                ( $@ | tee -a $TSUN_DIR/$tsun_b/$TSUN_PKG-log.txt 2>&1 ) || echo "[Warning] Command '$1' failed. Not fatal"
+        fi
+}

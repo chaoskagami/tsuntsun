@@ -1,0 +1,11 @@
+#!/bin/bash
+function build() {
+	_loge "Configuring..."
+	_log ./config --prefix=/usr --openssldir=/etc/ssl shared zlib-dynamic
+
+	_loge "Building..."
+	_make
+
+	_loge "Installing..."
+	_make install
+}

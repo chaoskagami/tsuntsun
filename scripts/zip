@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Builds zip.
+
+function build() {
+	_loge "Copying unix Makefile..."
+	_log cp -v unix/Makefile Makefile
+
+	_loge "Building..."
+	_make generic
+
+	_loge "Installing..."
+	_make prefix=/usr install
+}
