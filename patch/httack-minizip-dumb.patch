@@ -1,0 +1,36 @@
+diff -u -r a/httrack-3.48.21/src/minizip/ioapi.h b/httrack-3.48.21/src/minizip/ioapi.h
+--- a/httrack-3.48.21/src/minizip/ioapi.h       2015-03-14 06:13:02.000000000 -0400
++++ b/httrack-3.48.21/src/minizip/ioapi.h       2015-03-14 19:17:17.341367765 -0400
+@@ -21,6 +21,8 @@
+ #ifndef _ZLIBIOAPI64_H
+ #define _ZLIBIOAPI64_H
+ 
++#define OF(x) x
++
+ #if (!defined(_WIN32)) && (!defined(WIN32)) && (!defined(__APPLE__))
+ 
+   // Linux needs this to support file operation on files larger then 4+GB
+diff -u -r a/httrack-3.48.21/src/minizip/unzip.h b/httrack-3.48.21/src/minizip/unzip.h
+--- a/httrack-3.48.21/src/minizip/unzip.h       2015-03-14 06:13:02.000000000 -0400
++++ b/httrack-3.48.21/src/minizip/unzip.h       2015-03-14 19:15:41.340745457 -0400
+@@ -47,6 +47,8 @@
+ extern "C" {
+ #endif
+ 
++#define OF(x) x
++
+ #ifndef _ZLIB_H
+ #include "zlib.h"
+ #endif
+diff -u -r a/httrack-3.48.21/src/minizip/zip.h b/httrack-3.48.21/src/minizip/zip.h
+--- a/httrack-3.48.21/src/minizip/zip.h 2015-03-14 06:13:02.000000000 -0400
++++ b/httrack-3.48.21/src/minizip/zip.h 2015-03-14 19:16:02.160362325 -0400
+@@ -44,6 +44,8 @@
+ extern "C" {
+ #endif
+ 
++#define OF(x) x
++
+ //#define HAVE_BZIP2
+ 
+ #ifndef _ZLIB_H

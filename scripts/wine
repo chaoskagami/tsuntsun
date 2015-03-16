@@ -78,6 +78,9 @@ function build_x86_64() {
 
 	export LDCONFIG=/bin/true
 
+	_loge "Reconfiguring for patches..."
+	autoreconf
+
 	mkdir -p ../b_wine64 ../b_wine32
 
 	cd ../b_wine64
@@ -148,6 +151,9 @@ function build_i686() {
 	_loge "=========================================================================================="
 
 	export LDCONFIG=/bin/true
+
+	_loge "Reconfiguring for patches..."
+	autoreconf
 
 	mkdir -p ../b_wine
 

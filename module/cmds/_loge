@@ -1,4 +1,4 @@
 #!/bin/bash
 function _loge() {
-        ( echo "[Info] $@" | tee -a $TSUN_DIR/$tsun_b/$TSUN_PKG-log.txt 2>&1 )
+        ( echo "[Info] $@" | tee -a $TSUNDIR/$tsun_b/$TSUN_PKG-log.txt 2>&1 )
 }
