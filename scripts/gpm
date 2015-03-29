@@ -7,7 +7,7 @@ function build() {
 	_log ./autogen.sh
 
 	_loge "Configuring..."
-	_configure --prefix=/usr
+	_configure --prefix=/usr --libdir=$TSUN_LIBDIR
 
 	_loge "Building..."
 	_make

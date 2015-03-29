@@ -14,7 +14,11 @@ winegecko_version_check() {
 	fi
 }
 
+# default is latest.
+GV="2.36"
+# do checks
 winegecko_version_check "9999" "2.36"
+winegecko_version_check "1.7.39" "2.36"
 winegecko_version_check "1.7.38" "2.36"
 winegecko_version_check "1.7.37" "2.34"
 winegecko_version_check "1.7.36" "2.34"
@@ -36,7 +40,12 @@ winemono_version_check() {
 	fi
 }
 
+# default is latest
+MV="4.56"
+
+# do checks
 winemono_version_check "9999" "4.5.6"
+winemono_version_check "1.7.39" "4.5.6"
 winemono_version_check "1.7.38" "4.5.6"
 winemono_version_check "1.7.37" "4.5.4"
 winemono_version_check "1.7.36" "4.5.4"
@@ -61,19 +70,58 @@ function use_without() {
 }
 
 function build() {
+	if [ "$STAGING" == "1" ]; then
+
+		_loge "Checking for staging patchset in files..."
+
+		# Make sure we have a matching tarball of wine-staging
+
+		if [ ! -f "$TSUNDIR/$tsun_f/wine-staging-${PV}.tar.gz" ]; then
+			_loge "Nope, not there. Fetching..."
+
+			wget "https://github.com/wine-compholio/wine-staging/archive/v${PV}.tar.gz" -O "$TSUNDIR/$tsun_f/wine-staging-${PV}.tar.gz"
+		fi
+
+		# We do now. Extract it.
+		_loge "Extracting staging patchset..."
+
+		cd ..
+		_log tar -xvpf "$TSUNDIR/$tsun_f/wine-staging-${PV}.tar.gz"
+		cd "wine-staging-${PV}/patches/"
+
+		_loge "Applying staging patchset..."
+
+		# Install staging to the wine source.
+		_log ./patchinstall.sh --all DESTDIR="../../${P}"
+
+		_loge "Modifying destination prefix to '${PV}_stg'..."
+
+		mv "../../wine-${PV}" "../../wine-${PV}_stg"
+
+		# We're building staging now. Export PV to indicate this.
+		export PV="${PV}_stg"
+
+		# Go back to the wine directory.
+		cd "../../wine-${PV}"
+	fi
+
+	if [ "$STAGING" == "1" ]; then
+		echo "Patchset:	Staging (Warning - do not report bugs upstream!)"
+	fi
+
 	build_$TSUN_ARCH
 }
 
 function build_x86_64() {
 	export COMMON="$(use_with alsa) $(use_with capi) $(use_with cms) $(use_with cups) $(use_with curses) $(use_with dbus) $(use_with fontconfig) $(use_with gnutls) $(use_with gphoto) $(use_with gsm) --without-hal $(use_with jpeg) $(use_with ldap) $(use_with mpg123) $(use_with netapi) $(use_with gettext) $(use_with openal) $(use_with opengl) $(use_without osmesa) $(use_with oss) $(use_with png) $(use_with pthread) $(use_with sane) $(use_with freetype) $(use_with x) $(use_with xcomposite) $(use_with xinerama) $(use_with xml) $(use_with xslt) --prefix=/usr/lib/wine/${PV}/ --sysconfdir=/etc/wine/${PV}/ --mandir=/usr/lib/wine/${PV}/man/ --datadir=/usr/lib/wine/${PV}/"
 
-	_loge "Wine:	$PV"
-	_loge "Gecko:	$GV"
-	_loge "Mono:	$MV"
-	_loge "Name:	$P"
-	_loge "Cfg:	$COMMON"
-	_loge "Arch:	$TSUN_ARCH"
-	_loge "Type:	Shared WoW64"
+	_loge "Wine:		$PV"
+	_loge "Gecko:		$GV"
+	_loge "Mono:		$MV"
+	_loge "Name:		$P"
+	_loge "Cfg:		$COMMON"
+	_loge "Arch:		$TSUN_ARCH"
+	_loge "Type:		Shared WoW64"
 	_loge "=========================================================================================="
 
 	export LDCONFIG=/bin/true
@@ -85,49 +133,49 @@ function build_x86_64() {
 
 	cd ../b_wine64
 
-	_loge "Configuring 64-bit wine."
+	_loge "Configuring 64-bit wine..."
 
 	# Build 64-bit first.
-	_log ../${P}/configure	--enable-win64 \
+	_log ../${PN}-${PV}/configure	--enable-win64 \
 				$COMMON
 
-	_loge "Building 64-bit wine."
+	_loge "Building 64-bit wine..."
 
 	_make
 
 	cd ../b_wine32
 
-	_loge "Configuring 32-bit wine."
+	_loge "Configuring 32-bit wine..."
 
-	_log ../${P}/configure	--with-wine64=../b_wine64 \
+	_log ../${PN}-${PV}/configure	--with-wine64=../b_wine64 \
 				$COMMON
 
-	_loge "Building 32-bit wine."
+	_loge "Building 32-bit wine..."
 
 	_make
 
-	_loge "Installing 32-bit wine."
+	_loge "Installing 32-bit wine..."
 
 	cd ../b_wine32
 	_make install
 
-	_loge "Installing 64-bit wine."
+	_loge "Installing 64-bit wine..."
 
 	cd ../b_wine64
 	_make install
 
-	cd ../${P}
+	cd ../${PN}-${PV}
 
-	_loge "Fetching wine gecko."
+	_loge "Fetching wine gecko..."
 
 	fetch_sf wine Wine%20Gecko/${GV}/wine_gecko-${GV}-x86.msi
 	fetch_sf wine Wine%20Gecko/${GV}/wine_gecko-${GV}-x86_64.msi
 
-	_loge "Fetching wine mono."
+	_loge "Fetching wine mono..."
 
 	fetch_sf wine Wine%20Mono/${MV}/wine-mono-${MV}.msi
 
-	_loge "Installing gecko & mono."
+	_loge "Installing gecko & mono..."
 
 	_log install -dv -m 755 /usr/lib/wine/${PV}/share/wine/gecko
 	_log install -dv -m 755 /usr/lib/wine/${PV}/share/wine/mono
@@ -141,13 +189,13 @@ function build_i686() {
 	export COMMON="$(use_with alsa) $(use_with capi) $(use_with cms) $(use_with cups) $(use_with curses) $(use_with dbus) $(use_with fontconfig) $(use_with gnutls) $(use_with gphoto) $(use_with gsm) --without-hal $(use_with jpeg) $(use_with ldap) $(use_with mpg123) $(use_with netapi) $(use_with gettext) $(use_with openal) $(use_with opengl) $(use_without osmesa) $(use_with oss) $(use_with png) $(use_with pthread) $(use_with sane) $(use_with freetype) $(use_with x) $(use_with xcomposite) $(use_with xinerama) $(use_with xml) $(use_with xslt) --prefix=/usr/lib/wine/${PV}/ --sysconfdir=/etc/wine/${PV}/ --mandir=/usr/lib/wine/${PV}/man/ --datadir=/usr/lib/wine/${PV}/"
 
 
-	_loge "Wine:	$PV"
-	_loge "Gecko:	$GV"
-	_loge "Mono:	$MV"
-	_loge "Name:	$P"
-	_loge "Cfg:	$COMMON"
-	_loge "Arch:	$TSUN_ARCH"
-	_loge "Type:	Standard 32bit"
+	_loge "Wine:		$PV"
+	_loge "Gecko:		$GV"
+	_loge "Mono:		$MV"
+	_loge "Name:		$P"
+	_loge "Cfg:		$COMMON"
+	_loge "Arch:		$TSUN_ARCH"
+	_loge "Type:		Standard 32bit"
 	_loge "=========================================================================================="
 
 	export LDCONFIG=/bin/true
@@ -159,29 +207,38 @@ function build_i686() {
 
 	cd ../b_wine
 
-	_loge "Configuring wine."
+	_loge "Configuring wine..."
 	_log ../${P}/configure	$COMMON
 
-	_loge "Building wine."
+	_loge "Building wine..."
 	_make
 
-	_loge "Installing wine."
+	_loge "Installing wine..."
 	_make install
 
 	cd ../${P}
 
-	_loge "Fetching wine gecko."
+	_loge "Fetching wine gecko..."
 
 	fetch_sf wine Wine%20Gecko/${GV}/wine_gecko-${GV}-x86.msi
 
-	_loge "Fetching wine mono."
+	_loge "Fetching wine mono..."
 
 	fetch_sf wine Wine%20Mono/${MV}/wine-mono-${MV}.msi
 
-	_loge "Installing gecko & mono."
+	_loge "Installing gecko & mono..."
 
 	_log install -dv -m 755 /usr/lib/wine/${PV}/share/wine/gecko
 	_log install -dv -m 755 /usr/lib/wine/${PV}/share/wine/mono
 	_log install -m 755 wine_gecko-${GV}-x86.msi /usr/lib/wine/${PV}/share/wine/gecko/
 	_log install -m 755 wine-mono-${MV}.msi /usr/lib/wine/${PV}/share/wine/mono/
+
+	_loge "PaX marking wine and preloaders..."
+	_log paxctl -permxs /usr/lib/wine/${PV}/bin/wine-preloader
+	_log paxctl -permxs /usr/lib/wine/${PV}/bin/wine64-preloader
+	_log paxctl -permxs /usr/lib/wine/${PV}/bin/wine64
+	_log paxctl -permxs /usr/lib/wine/${PV}/bin/wine
+
+	_loge "Disabling ptrace restriction (for dll injectors like SKSE)..."
+	_log setcap cap_sys_ptrace=eip /usr/lib/wine/${PV}/bin/wineserver
 }

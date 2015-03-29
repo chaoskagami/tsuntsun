@@ -1,0 +1,11 @@
+#!/bin/bash
+function build() {
+	# Oot build required for glibc.
+
+	_log mkdir ../build-$TSUN_PKG
+	cd ../build-$TSUN_PKG
+
+        _log ../$TSUN_PKG/configure --prefix=$TSUN_PREFIX --libdir=$TSUN_LIBDIR --sysconfdir=/etc --enable-shared --with-pic
+        _make
+        _make install
+}

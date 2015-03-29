@@ -1,0 +1,13 @@
+#!/bin/bash
+function build() {
+	# Doesn't properly set src dir. Mofo!
+
+	cd $TSUNDIR/$tsun_b/$TSUN_PACKNAME/icu/source
+
+	# never ever ever build as C++11 !
+	# Causes mucho problemos
+	export CC="gcc"
+	export CXX="g++"
+	export CFLAGS="${CFLAGS} -std=gnu99"
+	b_configure
+}

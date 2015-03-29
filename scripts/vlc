@@ -4,7 +4,7 @@ function build() {
 	_log ./bootstrap
 
 	_loge "Configuring..."
-	_configure  --enable-xvideo --enable-directfb --disable-glx --enable-qt=4 --disable-sid --enable-sdl --enable-a52 --enable-libmpeg2 --enable-dvdnav --enable-faad --enable-vorbis --enable-ogg --enable-theora --enable-mkv --enable-freetype --enable-flac --disable-caca --enable-skins2 --enable-alsa --prefix=/usr --with-pic=yes
+	_configure  --enable-xvideo --enable-directfb --disable-glx --enable-qt=4 --disable-sid --enable-sdl --enable-a52 --enable-libmpeg2 --enable-dvdnav --enable-faad --enable-vorbis --enable-ogg --enable-theora --enable-mkv --enable-freetype --enable-flac --disable-caca --enable-skins2 --enable-alsa --prefix=/usr --with-pic --libdir=$TSUN_LIBDIR
 
 	_loge "Building..."
 	_make

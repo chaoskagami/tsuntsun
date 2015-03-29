@@ -27,40 +27,40 @@ function check_env() {
 	cd $TSUNDIR/$tsun_b/$TSUN_PACKNAME/
 	cd $TSUNDIR/$tsun_b/$TSUN_PACKNAME/$TSUN_PKG/$TSUN_APPEND
 
-	echo "=========================================================================================="
-	echo "Package:		$TSUN_PKG"
-	echo "Version:		$TSUN_VER"
-	echo "Name:			$TSUN_NAME"
-	echo "Filename:		$TSUN_PACKNAME"
-	echo "Parallel:		$N"
-	echo "=========================================================================================="
+	_loge "=========================================================================================="
+	_loge "Package:		$TSUN_PKG"
+	_loge "Version:		$TSUN_VER"
+	_loge "Name:			$TSUN_NAME"
+	_loge "Filename:		$TSUN_PACKNAME"
+	_loge "Parallel:		$N"
+	_loge "=========================================================================================="
 
 	patch_rules
 	apply_patches
 
 	if [ "$TSUN_CUSTOM" == 1 ] ; then
-		echo "Build via:	[Build Script]"
-		echo "=========================================================================================="
+		_loge "Build via:	[Build Script]"
+		_loge "=========================================================================================="
 		build
 	elif [ "$TSUN_CONFIGURE" == "1" ] ; then
-		echo "Build via:	[configure]"
-		echo "=========================================================================================="
+		_loge "Build via:	[configure]"
+		_loge "=========================================================================================="
 		b_configure
 	elif [ "$TSUN_SETUPPY" == "1" ] ; then
-		echo "Build via:	[setup.py]"
-		echo "=========================================================================================="
+		_loge "Build via:	[setup.py]"
+		_loge "=========================================================================================="
 		b_setuppy
 	elif [ "$TSUN_CMAKE" == "1" ] ; then
-		echo "Build via:	[cmake]"
-		echo "=========================================================================================="
-		fail "NYI, sorry."
+		_loge "Build via:	[cmake]"
+		_loge "=========================================================================================="
+		b_cmake "NYI, sorry."
 	elif [ "$TSUN_AUTOCONF" == "1" ] ; then
-		echo "Build via:	[autoconf && configure]"
-		echo "=========================================================================================="
+		_loge "Build via:	[autoconf && configure]"
+		_loge "=========================================================================================="
 		b_autoconf
 	else
-		echo "Build via:	[I don't even]"
-		echo "=========================================================================================="
+		_loge "Build via:	[I don't even]"
+		_loge "=========================================================================================="
 		fail "W-what is this thing...? I can't do it! Impossible!"
 	fi
 

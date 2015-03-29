@@ -1,0 +1,12 @@
+#!/bin/bash
+function build() {
+	# Fix for idiotic ambiguity.
+	sed -i 's/GMutexLocker/WebCore::GMutexLocker/g' qtwebkit/Source/WebCore/platform/graphics/gstreamer/WebKitWebSourceGStreamer.cpp
+
+	# qt requires gmake instead of make for some irrational reason
+	# it also forces license agreement
+
+	_configure -no-pulseaudio -system-harfbuzz -opensource -libdir $TSUN_LIBDIR -sysconfdir /etc -prefix /usr -no-mtdev -no-directfb
+	_log gmake -j$N
+	_log gmake -j$N install
+}

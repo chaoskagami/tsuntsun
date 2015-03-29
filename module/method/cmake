@@ -2,7 +2,13 @@
 function detect_cmake() {
         cd $TSUN_BDIR/$TSUN_PKG/$TSUN_APPEND
         if [ -e "CMakeLists.txt" ]; then
-                export CMAKE=1
+                export TSUN_CMAKE=1
                 return
         fi
+}
+
+function b_cmake() {
+	_log cmake -DCMAKE_INSTALL_PREFIX=/usr . $@
+	_make
+	_make install
 }

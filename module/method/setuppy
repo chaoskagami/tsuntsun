@@ -5,7 +5,7 @@ export TSUN_PY=python2
 function detect_setuppy() {
         cd $TSUN_BDIR/$TSUN_PKG/$TSUN_APPEND
         if [ -e "setup.py" ]; then
-                export SETUPPY=1
+                export TSUN_SETUPPY=1
                 return
         fi
 }

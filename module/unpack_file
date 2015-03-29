@@ -10,8 +10,8 @@ function unpack_file() {
                 return
         fi
 
-        TSUN_FTYP=(tar gz xz bz2 tar.gz tar.xz tar.bz2 tgz txz tbz2)
-        for exttype in $TSUN_FTYP ; do
+        TSUN_FTYP=("tar" "gz" "xz" "bz2" "tgz" "txz" "tbz2")
+        for exttype in ${TSUN_FTYP[@]} ; do
                 if [ `echo "$TSUN_EXT" | grep "$exttype" -` ]; then
                         export TSUN_BDIR=$TSUNDIR/$tsun_b/$(basename $TSUN_PACKNAME)
                         # tarball
@@ -21,12 +21,14 @@ function unpack_file() {
                 fi
         done
 
-	if [ -f $TSUN_PACKNAME ] ; then
-		export TSUN_BDIR=$TSUNDIR/$tsun_b/$(basename $TSUN_PACKNAME)
-		mkdir -p $TSUN_BDIR && cd $TSUN_BDIR
-		_log cp -rav $TSUNDIR/$tsun_f/$TSUN_PACKNAME $TSUN_PACKNAME
-		return
-	fi
+#       # What the hell even is this below?
+
+#	if [ -d $TSUN_PACKNAME ] ; then
+#		export TSUN_BDIR=$TSUNDIR/$tsun_b/$(basename $TSUN_PACKNAME)
+#		mkdir -p $TSUN_BDIR && cd $TSUN_BDIR
+#		_log cp -rav $TSUNDIR/$tsun_f/$TSUN_PACKNAME $TSUN_PACKNAME
+#		return
+#	fi
 
 	fail "You wrapped it up too well. I can't even open it. Help!"
 }

@@ -8,8 +8,10 @@
 #######################################################
 
 function build() {
+	export LUA51_LIBS='-llua -lm'
+
 	_loge "Configuring..."
-        _configure --prefix=$TSUN_PREFIX --libdir=$TSUN_LIBDIR --sysconfdir=/etc --enable-shared --with-pic=yes
+        _configure --prefix=$TSUN_PREFIX --libdir=$TSUN_LIBDIR --sysconfdir=/etc --enable-shared --with-pic=yes --enable-lua --enable-imlib2 --enable-lua-imlib2 --enable-lua-cairo
 
 	_loge "Building..."
 	_make

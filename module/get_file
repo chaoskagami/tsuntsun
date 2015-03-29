@@ -4,7 +4,7 @@ function get_file() {
                 export TSUN_PACKNAME=$(basename "$1")
                 export TSUN_EXT=${TSUN_PACKNAME#*.}
                 export TSUN_PKG=$(remove_ext "$TSUN_PACKNAME")
-	        export TSUN_NAME=$(echo $(echo $TSUN_PKG | sed 's/-*//g') | sed 's/[0123456789\.]//g')
+	        export TSUN_NAME=$(echo $(echo $TSUN_PKG | sed 's/-.*//g') | sed 's/[0123456789\.]//g')
 	        export TSUN_VER=$(echo $TSUN_PKG | sed "s/$TSUN_NAME-//g")
                 cd $TSUNDIR/$tsun_f
                 fetch_wget $1

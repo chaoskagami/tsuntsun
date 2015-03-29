@@ -1,0 +1,26 @@
+#!/bin/bash
+
+env -i bash -c
+
+TSUNDIR=$( cd "$( dirname "$0" )" && pwd )
+cd $TSUNDIR
+
+export tsun_b=build
+export tsun_f=files
+export tsun_m=module
+export tsun_r=scripts
+export tsun_c=custom
+export tsun_p=patch
+
+# Never ever ever pass -j blank. It will eat your RAM alive.
+if [ "$N" == "" ]; then
+	export N=$(nproc) # Default is number of CPUs
+fi
+
+source $TSUNDIR/$tsun_m/probe
+probe
+
+echo "Commands within tsun are now available. Exit this env when done."
+export PS1="[tsun] #"
+
+bash

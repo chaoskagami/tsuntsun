@@ -11,7 +11,7 @@ function detect_autoconf() {
 function b_autoconf() {
 	_autoconf
 
-	_configure --prefix=$TSUN_PREFIX --libdir=$TSUN_LIBDIR --sysconfdir=/etc --enable-shared --with-pic=yes
+	_configure --prefix=$TSUN_PREFIX --libdir=$TSUN_LIBDIR --sysconfdir=/etc --enable-shared --with-pic
 	_make
 	_make install
 }

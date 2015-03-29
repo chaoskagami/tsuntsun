@@ -1,3 +1,6 @@
 export TSUN_PREFIX=/usr
 export TSUN_LIBDIR=/usr/lib64
 export TSUN_ARCH=x86_64
+export CFLAGS="-fPIC -DPIC -O2 -pipe"
+export LIBS="-ldl"
+export LD="ld.gold"

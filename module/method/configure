@@ -9,7 +9,7 @@ function detect_configure() {
 }
 
 function b_configure() {
-        _configure --prefix=$TSUN_PREFIX --libdir=$TSUN_LIBDIR --sysconfdir=/etc --enable-shared --with-pic=yes
+        _configure --prefix=$TSUN_PREFIX --libdir=$TSUN_LIBDIR --sysconfdir=/etc --enable-shared --with-pic --disable-introspection $@
         _make
         _make install
 }

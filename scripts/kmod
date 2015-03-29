@@ -1,6 +1,6 @@
 #!/bin/bash
 function build() {
-	# System software. Yes, '/'.
+	# System software. Yes, '/'. We install to the root.
 	_loge "Configuring (for /)..."
 	_configure --with-xz --with-zlib --prefix=/
 

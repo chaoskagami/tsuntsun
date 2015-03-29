@@ -1,7 +1,7 @@
 #!/bin/bash
 function build() {
 	_loge "Configuring..."
-	_log ./config --prefix=/usr --openssldir=/etc/ssl shared zlib-dynamic
+	_log ./config --prefix=/usr --openssldir=/etc/ssl --libdir=$TSUN_LIBDIR shared zlib-dynamic
 
 	_loge "Building..."
 	_make
